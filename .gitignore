@@ -1,0 +1,7 @@
+*.o
+*.d
+/Debug/POWR
+.cproject
+.project
+.settings/*
+.vscode/*
