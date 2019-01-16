@@ -8,7 +8,11 @@
 #ifndef MAIN_H_
 #define MAIN_H_
 
-
+enum {
+	KEY_RETURN = 13,
+	KEY_BACKSPACE = 8,
+	KEY_ESC = 27
+};
 
 
 

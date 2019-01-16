@@ -9,11 +9,13 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/plot.hpp>
 #include <iostream>
+#include <string>
+#include "main.h"
 using namespace cv;
 
 static struct {
 	bool isUsed;
-	char filename[256];
+	std::string filename;
 } fileMode;
 
 static struct {
@@ -35,7 +37,7 @@ static void parseInputArguments(int argc, char **argv) {
 					fileMode.isUsed = true;
 					/* if there is another argument provided */
 					if((i + 1) < argc)
-						strcpy(fileMode.filename, argv[i + 1]);
+						fileMode.filename = argv[i + 1];
 					break;
 
 				case 'c':
@@ -44,39 +46,95 @@ static void parseInputArguments(int argc, char **argv) {
 
 				default:
 					std::cerr << "Unrecognized parameter." << std::endl;
-					std::cerr << "Choose one from available modes: -f for file mode, -c for camera mode." << std::endl;
+					goto invalid;
 			}
 		}
 	}
-	if(ptr == NULL)
-		std::cerr << "Choose one from available modes: -f for file mode, -c for camera mode." << std::endl;
+	if(fileMode.isUsed == false && cameraMode.isUsed == false)
+		goto invalid;
+	else
+		return;
+invalid:
+	std::cout << "Choose one from available modes: -f for file mode, -c for camera mode." << std::endl;
+	std::cout << "When you use file mode, you can type the file's path after -f flag" << std::endl;
+}
+
+/* Note: one or more opencv windows must be active for waitkey correct working */
+static void readFromKeyboard(String &buf) {
+	while(1) {
+		int key = waitKey(0);
+		if(' ' <= key && key <= '~') {
+			buf += (char)key;
+		} else {
+			switch(key) {
+			case KEY_BACKSPACE:
+				if(buf.length() > 0) {
+					buf = buf.substr(0, buf.length() - 1);
+				}
+				break;
+
+			case KEY_RETURN:
+				return;
+
+			default:
+				/* overrun */
+				break;
+			}
+		}
+		std::system("clear");
+		std::cout << buf << std::endl;
+	}
 }
 
 void handleFileMode() {
 	std::cout << "Starting file mode.." << std::endl;
 	std::cout << "Reading file from: " << fileMode.filename << std::endl;
-	frameHandling.frame = imread(fileMode.filename, IMREAD_COLOR);
-	if(!frameHandling.frame.data) {
-		std::cerr << "Image file not found!" << std::endl;
-		return;
-	}
+	Mat emptyWindow(500, 1000, CV_8UC3, Scalar(0,0, 100));
 	namedWindow("Raw");
+	imshow("Raw", emptyWindow);
+	while(1) {
+		frameHandling.frame = imread(fileMode.filename, IMREAD_COLOR);
+		if(!frameHandling.frame.data) {
+			std::cerr << "Image file not found! Do you want to type the file's path? (y or n)" << std::endl;
+			while(1) {
+				int ans = waitKey(0);
+				if(tolower(ans) == 'y') {
+					fileMode.filename = "";
+					std::system("clear");
+					readFromKeyboard(fileMode.filename);
+					break;
+				} else if(tolower(ans) == 'n') {
+					fileMode.isUsed = false;
+					goto exit;
+				}
+			}
+		} else {
+			std::cout << "Image loaded." << std::endl;
+			break;
+		}
+	}
+
 	imshow("Raw", frameHandling.frame);
 	while(fileMode.isUsed) {
 
-		if(waitKey(1) == 27)
+		if(waitKey(10) == KEY_ESC)
 			fileMode.isUsed = false;
 	}
+exit:
+	std::cout << "Exiting file mode." << std::endl;
 }
 
 void handleCameraMode() {
 	std::cout << "Starting camera mode.." << std::endl;
-
+	Mat emptyWindow(500, 1000, CV_8UC3, Scalar(0,0, 100));
+	namedWindow("Raw");
+	imshow("Raw", emptyWindow);
 	while(cameraMode.isUsed) {
 
-		if(waitKey(1) == 27)
+		if(waitKey(10) == KEY_ESC)
 			cameraMode.isUsed = false;
 	}
+	std::cout << "Exiting camera mode." << std::endl;
 }
 
 int main(int argc, char **argv) {
