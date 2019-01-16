@@ -8,20 +8,15 @@
 #ifndef MAIN_H_
 #define MAIN_H_
 
-enum {
-	KEY_RETURN = 13,
-	KEY_BACKSPACE = 8,
-	KEY_ESC = 27
-} keyboardEnum;
+#define MAIN_WINDOW_NAME "MainWindow"
 
-enum {
-	KEY_FILE_MODE = 'f',
+typedef enum {
+	MODE_EXIT = 0,
+	MODE_FILE = 1,
+	MODE_CAMERA = 2
+} mainModes_t;
 
-} cameraModeKeysEnum;
-
-enum {
-	KEY_CAMERA_MODE = 'c',
-
-} fileModeKeysEnum;
+void SetGlobalMode(mainModes_t mode);
+mainModes_t GetGlobalMode();
 
 #endif /* MAIN_H_ */

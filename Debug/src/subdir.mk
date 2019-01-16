@@ -4,12 +4,18 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
+../src/cameraMode.cpp \
+../src/fileMode.cpp \
 ../src/main.cpp 
 
 OBJS += \
+./src/cameraMode.o \
+./src/fileMode.o \
 ./src/main.o 
 
 CPP_DEPS += \
+./src/cameraMode.d \
+./src/fileMode.d \
 ./src/main.d 
 
 
