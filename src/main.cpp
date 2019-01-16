@@ -86,6 +86,16 @@ static void readFromKeyboard(String &buf) {
 	}
 }
 
+static void fileModeKeyboardHandling() {
+	int key = waitKey(10);
+	if(key == KEY_ESC)
+		fileMode.isUsed = false;
+	else if(key == KEY_CAMERA_MODE) {
+		fileMode.isUsed = false;
+		cameraMode.isUsed = true;
+	}
+}
+
 void handleFileMode() {
 	std::cout << "Starting file mode.." << std::endl;
 	std::cout << "Reading file from: " << fileMode.filename << std::endl;
@@ -117,23 +127,40 @@ void handleFileMode() {
 	imshow("Raw", frameHandling.frame);
 	while(fileMode.isUsed) {
 
-		if(waitKey(10) == KEY_ESC)
-			fileMode.isUsed = false;
+		fileModeKeyboardHandling();
 	}
 exit:
 	std::cout << "Exiting file mode." << std::endl;
 }
 
+static void cameraModeKeyboardHandling() {
+	int key = waitKey(10);
+	if(key == KEY_ESC)
+		cameraMode.isUsed = false;
+	else if(key == KEY_FILE_MODE) {
+		cameraMode.isUsed = false;
+		fileMode.isUsed = true;
+	}
+}
+
 void handleCameraMode() {
 	std::cout << "Starting camera mode.." << std::endl;
 	Mat emptyWindow(500, 1000, CV_8UC3, Scalar(0,0, 100));
+	VideoCapture capture;
+	if(!capture.open(0)) {
+		cameraMode.isUsed = false;
+		std::cerr << "Camera not found!" << std::endl;
+		goto exit;
+	}
 	namedWindow("Raw");
 	imshow("Raw", emptyWindow);
 	while(cameraMode.isUsed) {
+		capture >> frameHandling.frame;
+		imshow("Raw", frameHandling.frame);
 
-		if(waitKey(10) == KEY_ESC)
-			cameraMode.isUsed = false;
+		cameraModeKeyboardHandling();
 	}
+exit:
 	std::cout << "Exiting camera mode." << std::endl;
 }
 

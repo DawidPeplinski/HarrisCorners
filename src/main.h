@@ -12,8 +12,16 @@ enum {
 	KEY_RETURN = 13,
 	KEY_BACKSPACE = 8,
 	KEY_ESC = 27
-};
+} keyboardEnum;
 
+enum {
+	KEY_FILE_MODE = 'f',
 
+} cameraModeKeysEnum;
+
+enum {
+	KEY_CAMERA_MODE = 'c',
+
+} fileModeKeysEnum;
 
 #endif /* MAIN_H_ */
