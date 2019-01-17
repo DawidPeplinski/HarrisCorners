@@ -56,6 +56,8 @@ void CameraMode::HandleKeyboard() {
 		this->capturingActive = !this->capturingActive;
 		if(this->capturingActive == false) {
 			this->harrisDetector.FindCorners(this->frame);
+			this->harrisDetector.ShowCorners();
+			this->harrisDetector.BindMouseCallback();
 		} else {
 			this->harrisDetector.DestroyCornersWindow();
 		}

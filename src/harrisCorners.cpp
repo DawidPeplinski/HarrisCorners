@@ -63,3 +63,21 @@ void HarrisCorners::DestroyCornersWindow() {
 	destroyWindow(HARRIS_CORNERS_WINDOW);
 	this->currentPointsCount = 0;
 }
+
+void HarrisCorners::MouseCallback(int  event, int  x, int  y, int  flag, void *param) {
+	HarrisCorners *m = (HarrisCorners *)param;
+	if(event == EVENT_LBUTTONUP) {
+		for(int i = 0; i < m->currentPointsCount; i++) {
+			Point p = m->pointsTab[i];
+			if(abs(p.x - x) < m->blocksize && abs(p.y - y) < m->blocksize) {
+				rectangle(m->result, Point(p.x - m->blocksize, p.y - m->blocksize), Point(p.x + m->blocksize, p.y + m->blocksize), Scalar(255), 2, LINE_4, 0);
+				m->ShowCorners();
+				break;
+			}
+		}
+	}
+}
+
+void HarrisCorners::BindMouseCallback() {
+	setMouseCallback(HARRIS_CORNERS_WINDOW, MouseCallback, this);
+}

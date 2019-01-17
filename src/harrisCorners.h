@@ -21,12 +21,14 @@ public:
 	void FindCorners(Mat frame);
 	void ShowCorners();
 	void DestroyCornersWindow();
+	void BindMouseCallback();
 	void IncreaseSensivity() { this->threshold = (this->maxThreshold < (this->threshold + 5)) ? this->maxThreshold : this->threshold + 5; }
 	void DecreaseSensivity() { this->threshold = ((this->threshold - 5) < this->minThreshold) ? this->minThreshold : this->threshold - 5; }
 	void IncreaseBlocksize() { this->blocksize = (this->maxBlocksize < (this->blocksize + 1)) ? this->maxBlocksize : this->blocksize + 1; }
 	void DecreaseBlocksize() { this->blocksize = ((this->blocksize - 1) < this->minBlocksize) ? this->minBlocksize : this->blocksize - 1; }
 
 private:
+	static void MouseCallback(int event, int x, int y, int flag, void *param);
 	static const int maxThreshold = 255;
 	static const int minThreshold = 0;
 	static const int maxBlocksize = 16;

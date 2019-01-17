@@ -50,10 +50,12 @@ void FileMode::HandleMode() {
 
 	imshow(MAIN_WINDOW_NAME, this->frame);
 	moveWindow(MAIN_WINDOW_NAME, 0, 0);
-	this->harrisDetector.FindCorners(this->frame);
 	while(GetGlobalMode() == MODE_FILE) {
+		this->harrisDetector.FindCorners(this->frame);
 		this->harrisDetector.ShowCorners();
+		this->harrisDetector.BindMouseCallback();
 
+		// this method stops the program until any key is pressed down
 		HandleKeyboard();
 	}
 exit:
@@ -62,23 +64,19 @@ exit:
 }
 
 void FileMode::HandleKeyboard() {
-	int key = waitKey(10);
+	int key = waitKey(0);
 	if(key == KEY_ESC)
 		SetGlobalMode(MODE_EXIT);
 	else if(key == KEY_CAMERA_MODE)
 		SetGlobalMode(MODE_CAMERA);
 	else if(key == KEY_INCREASE_DETECT_THRES) {
 		harrisDetector.IncreaseSensivity();
-		this->harrisDetector.FindCorners(this->frame);
 	} else if(key == KEY_DECREASE_DETECT_THRES) {
 		harrisDetector.DecreaseSensivity();
-		this->harrisDetector.FindCorners(this->frame);
 	} else if(key == KEY_INCREASE_BLOCKSIZE) {
 		this->harrisDetector.IncreaseBlocksize();
-		this->harrisDetector.FindCorners(this->frame);
 	} else if(key == KEY_DECREASE_BLOCKSIZE) {
 		harrisDetector.DecreaseBlocksize();
-		this->harrisDetector.FindCorners(this->frame);
 	}
 }
 
