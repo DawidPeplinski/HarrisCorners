@@ -24,21 +24,25 @@ void CameraMode::HandleMode() {
 		std::cerr << "Camera not found!" << std::endl;
 		goto exit;
 	} else {
-		std::cout << "Press SPACE to stop capturing. To switch to file mode, press F" << std::endl;
+		std::cout << "Press SPACE to start/stop capturing. To switch to file mode, press F" << std::endl;
+		std::cout << "Use '[' and ']' to decrease/increase detection threshold when capturing is stopped" << std::endl;
 		std::cout << "Press ESC to quit" << std::endl;
 	}
 	namedWindow(MAIN_WINDOW_NAME);
 	imshow(MAIN_WINDOW_NAME, emptyWindow);
+	moveWindow(MAIN_WINDOW_NAME, 0, 0);
 	while(GetGlobalMode() == MODE_CAMERA) {
 		if(this->capturingActive)
 			capture >> this->frame;
-		// todo: else find characteristic points
+		else
+			this->harrisDetector.ShowCorners();
 		imshow(MAIN_WINDOW_NAME, this->frame);
 
 		HandleKeyboard();
 	}
 exit:
-	std::cout << "Exiting camera mode." << std::endl;
+	destroyAllWindows();
+	std::cout << "Exiting camera mode" << std::endl;
 }
 
 void CameraMode::HandleKeyboard() {
@@ -47,6 +51,16 @@ void CameraMode::HandleKeyboard() {
 		SetGlobalMode(MODE_EXIT);
 	else if(key == KEY_FILE_MODE) {
 		SetGlobalMode(MODE_FILE);
-	} else if(key == KEY_TOGGLE_CAPTURING)
+	} else if(key == KEY_TOGGLE_CAPTURING) {
 		this->capturingActive = !this->capturingActive;
+		if(this->capturingActive == false) {
+			this->harrisDetector.FindCorners(this->frame);
+		}
+	} else if(key == KEY_INCREASE_DETECT_SENS && this->capturingActive == false) {
+		this->harrisDetector.IncreaseSensivity();
+		this->harrisDetector.FindCorners(this->frame);
+	} else if(key == KEY_DECREASE_DETECT_SENS && this->capturingActive == false) {
+		harrisDetector.DecreaseSensivity();
+		this->harrisDetector.FindCorners(this->frame);
+	}
 }

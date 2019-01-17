@@ -6,16 +6,19 @@
 CPP_SRCS += \
 ../src/cameraMode.cpp \
 ../src/fileMode.cpp \
+../src/harrisCorners.cpp \
 ../src/main.cpp 
 
 OBJS += \
 ./src/cameraMode.o \
 ./src/fileMode.o \
+./src/harrisCorners.o \
 ./src/main.o 
 
 CPP_DEPS += \
 ./src/cameraMode.d \
 ./src/fileMode.d \
+./src/harrisCorners.d \
 ./src/main.d 
 
 

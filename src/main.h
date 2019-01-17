@@ -9,6 +9,7 @@
 #define MAIN_H_
 
 #define MAIN_WINDOW_NAME "MainWindow"
+#define HARRIS_CORNERS_WINDOW "HarrisCorners"
 
 typedef enum {
 	MODE_EXIT = 0,

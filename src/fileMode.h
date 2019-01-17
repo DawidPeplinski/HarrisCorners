@@ -10,6 +10,7 @@
 
 #include <opencv2/highgui/highgui.hpp>
 #include <iostream>
+#include "harrisCorners.h"
 #include "main.h"
 
 using namespace cv;
@@ -26,10 +27,13 @@ private:
 		KEY_RETURN = 13,
 		KEY_BACKSPACE = 8,
 		KEY_ESC = 27,
-		KEY_CAMERA_MODE = 'c'
+		KEY_CAMERA_MODE = 'c',
+		KEY_INCREASE_DETECT_SENS = ']',
+		KEY_DECREASE_DETECT_SENS = '['
 	} keys_t;
 	std::string filename;
 	Mat frame;
+	HarrisCorners harrisDetector;
 	void HandleKeyboard();
 	void ReadPathFromKeyboard();
 };
