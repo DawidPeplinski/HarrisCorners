@@ -38,9 +38,9 @@ void FileMode::HandleMode() {
 			}
 		} else {
 			std::cout << "Image loaded" << std::endl;
-			std::cout << "To switch to camera mode, press C." << std::endl;
-			std::cout << "Use '[' and ']' to decrease/increase detection threshold" << std::endl;
-			std::cout << "Use ',' and '.' to decrease/increase blocksize" << std::endl;
+			std::cout << "To switch to camera mode, press '" << (char)KEY_CAMERA_MODE << "'" << std::endl;
+			std::cout << "Use '" << (char)KEY_DECREASE_DETECT_THRES << "' and '" << (char)KEY_INCREASE_DETECT_THRES << "' to decrease/increase detection threshold" << std::endl;
+			std::cout << "Use '" << (char)KEY_DECREASE_BLOCKSIZE << "' and '" << (char)KEY_INCREASE_BLOCKSIZE << "' to decrease/increase blocksize" << std::endl;
 			std::cout << "Press ESC to quit" << std::endl;
 			while(1920 < this->frame.cols || 1080 < this->frame.rows)
 				resize(this->frame, this->frame, Size(this->frame.cols/2, this->frame.rows/2));

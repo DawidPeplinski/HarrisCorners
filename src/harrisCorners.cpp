@@ -11,6 +11,7 @@
 HarrisCorners::HarrisCorners() {
 	this->threshold = this->maxThreshold;
 	this->blocksize = 4;
+	this->currentPointsCount = 0;
 }
 
 HarrisCorners::~HarrisCorners() {
@@ -21,7 +22,6 @@ void HarrisCorners::FindCorners(Mat frame) {
 	Mat dst, dst_norm, gray_frame;
 	cvtColor(frame, gray_frame, COLOR_BGR2GRAY);
 	dst = Mat::zeros(frame.size(), CV_32FC1);
-	// Detector parameters
 	int apertureSize = 3;
 	double k = 0.04;
 	// Detecting corners
@@ -36,26 +36,30 @@ void HarrisCorners::FindCorners(Mat frame) {
 	for(int j = 0; j < dst_norm.rows; j++) {
 		for(int i = 0; i < dst_norm.cols; i++) {
 			if((int)dst_norm.at<float>(j,i) > this->threshold) {
-			   count++;
+			   this->pointsTab[count++] = Point(i, j);
+			   if(this->maxPointsCount <= count) {
+				   this->currentPointsCount = 0;
+				   std::cout << "Too many points detected!" << std::endl;
+				   return;
+			   }
 			}
 		}
 	}
-	// Drawing a circle around corners
-	if(count < 100000) {
-		for(int j = 0; j < dst_norm.rows; j++) {
-			for(int i = 0; i < dst_norm.cols; i++) {
-				if((int)dst_norm.at<float>(j,i) > this->threshold) {
-				   circle(this->result, Point(i, j), this->blocksize, Scalar(0), 2, LINE_8, 0);
-				}
-			}
-		}
-	} else {
-		std::cout << "Too many points detected!" << std::endl;
+	// Drawing rectangles around corners
+	this->currentPointsCount = count;
+	for(int i = 0; i < this->currentPointsCount; i++) {
+		Point p = this->pointsTab[i];
+		rectangle(this->result, Point(p.x - this->blocksize, p.y - this->blocksize), Point(p.x + this->blocksize, p.y + this->blocksize), Scalar(0), 2, LINE_4, 0);
 	}
-
+	std::cout << "Found points count: " << this->currentPointsCount << std::endl;
 }
 
 void HarrisCorners::ShowCorners() {
 	// Showing the result
 	imshow(HARRIS_CORNERS_WINDOW, this->result);
+}
+
+void HarrisCorners::DestroyCornersWindow() {
+	destroyWindow(HARRIS_CORNERS_WINDOW);
+	this->currentPointsCount = 0;
 }

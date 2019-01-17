@@ -24,9 +24,9 @@ void CameraMode::HandleMode() {
 		std::cerr << "Camera not found!" << std::endl;
 		goto exit;
 	} else {
-		std::cout << "Press SPACE to start/stop capturing. To switch to file mode, press F" << std::endl;
-		std::cout << "Use '[' and ']' to decrease/increase detection threshold when capturing is stopped" << std::endl;
-		std::cout << "Use ',' and '.' to decrease/increase blocksize" << std::endl;
+		std::cout << "Press SPACE to start/stop capturing. To switch to file mode, press '" << (char)KEY_FILE_MODE << "'" << std::endl;
+		std::cout << "Use '" << (char)KEY_DECREASE_DETECT_THRES << "' and '" << (char)KEY_INCREASE_DETECT_THRES << "' to decrease/increase detection threshold when capturing is stopped" << std::endl;
+		std::cout << "Use '" << (char)KEY_DECREASE_BLOCKSIZE << "' and '" << (char)KEY_INCREASE_BLOCKSIZE << "' to decrease/increase blocksize" << std::endl;
 		std::cout << "Press ESC to quit" << std::endl;
 	}
 	namedWindow(MAIN_WINDOW_NAME);
@@ -56,6 +56,8 @@ void CameraMode::HandleKeyboard() {
 		this->capturingActive = !this->capturingActive;
 		if(this->capturingActive == false) {
 			this->harrisDetector.FindCorners(this->frame);
+		} else {
+			this->harrisDetector.DestroyCornersWindow();
 		}
 	} else if(key == KEY_INCREASE_DETECT_THRES && this->capturingActive == false) {
 		this->harrisDetector.IncreaseSensivity();
