@@ -26,6 +26,7 @@ void CameraMode::HandleMode() {
 	} else {
 		std::cout << "Press SPACE to start/stop capturing. To switch to file mode, press F" << std::endl;
 		std::cout << "Use '[' and ']' to decrease/increase detection threshold when capturing is stopped" << std::endl;
+		std::cout << "Use ',' and '.' to decrease/increase blocksize" << std::endl;
 		std::cout << "Press ESC to quit" << std::endl;
 	}
 	namedWindow(MAIN_WINDOW_NAME);
@@ -56,11 +57,17 @@ void CameraMode::HandleKeyboard() {
 		if(this->capturingActive == false) {
 			this->harrisDetector.FindCorners(this->frame);
 		}
-	} else if(key == KEY_INCREASE_DETECT_SENS && this->capturingActive == false) {
+	} else if(key == KEY_INCREASE_DETECT_THRES && this->capturingActive == false) {
 		this->harrisDetector.IncreaseSensivity();
 		this->harrisDetector.FindCorners(this->frame);
-	} else if(key == KEY_DECREASE_DETECT_SENS && this->capturingActive == false) {
+	} else if(key == KEY_DECREASE_DETECT_THRES && this->capturingActive == false) {
 		harrisDetector.DecreaseSensivity();
+		this->harrisDetector.FindCorners(this->frame);
+	} else if(key == KEY_INCREASE_BLOCKSIZE && this->capturingActive == false) {
+		this->harrisDetector.IncreaseBlocksize();
+		this->harrisDetector.FindCorners(this->frame);
+	} else if(key == KEY_DECREASE_BLOCKSIZE && this->capturingActive == false) {
+		harrisDetector.DecreaseBlocksize();
 		this->harrisDetector.FindCorners(this->frame);
 	}
 }

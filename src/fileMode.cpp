@@ -40,6 +40,7 @@ void FileMode::HandleMode() {
 			std::cout << "Image loaded" << std::endl;
 			std::cout << "To switch to camera mode, press C." << std::endl;
 			std::cout << "Use '[' and ']' to decrease/increase detection threshold" << std::endl;
+			std::cout << "Use ',' and '.' to decrease/increase blocksize" << std::endl;
 			std::cout << "Press ESC to quit" << std::endl;
 			while(1920 < this->frame.cols || 1080 < this->frame.rows)
 				resize(this->frame, this->frame, Size(this->frame.cols/2, this->frame.rows/2));
@@ -66,12 +67,17 @@ void FileMode::HandleKeyboard() {
 		SetGlobalMode(MODE_EXIT);
 	else if(key == KEY_CAMERA_MODE)
 		SetGlobalMode(MODE_CAMERA);
-	else if(key == KEY_INCREASE_DETECT_SENS) {
+	else if(key == KEY_INCREASE_DETECT_THRES) {
 		harrisDetector.IncreaseSensivity();
 		this->harrisDetector.FindCorners(this->frame);
-	}
-	else if(key == KEY_DECREASE_DETECT_SENS) {
+	} else if(key == KEY_DECREASE_DETECT_THRES) {
 		harrisDetector.DecreaseSensivity();
+		this->harrisDetector.FindCorners(this->frame);
+	} else if(key == KEY_INCREASE_BLOCKSIZE) {
+		this->harrisDetector.IncreaseBlocksize();
+		this->harrisDetector.FindCorners(this->frame);
+	} else if(key == KEY_DECREASE_BLOCKSIZE) {
+		harrisDetector.DecreaseBlocksize();
 		this->harrisDetector.FindCorners(this->frame);
 	}
 }

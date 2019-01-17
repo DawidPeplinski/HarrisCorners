@@ -28,8 +28,10 @@ private:
 		KEY_BACKSPACE = 8,
 		KEY_ESC = 27,
 		KEY_CAMERA_MODE = 'c',
-		KEY_INCREASE_DETECT_SENS = ']',
-		KEY_DECREASE_DETECT_SENS = '['
+		KEY_INCREASE_DETECT_THRES = ']',
+		KEY_DECREASE_DETECT_THRES = '[',
+		KEY_INCREASE_BLOCKSIZE = '.',
+		KEY_DECREASE_BLOCKSIZE = ','
 	} keys_t;
 	std::string filename;
 	Mat frame;

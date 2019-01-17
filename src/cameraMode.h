@@ -26,8 +26,10 @@ private:
 		KEY_ESC = 27,
 		KEY_FILE_MODE = 'f',
 		KEY_TOGGLE_CAPTURING = ' ',
-		KEY_INCREASE_DETECT_SENS = ']',
-		KEY_DECREASE_DETECT_SENS = '['
+		KEY_INCREASE_DETECT_THRES = ']',
+		KEY_DECREASE_DETECT_THRES = '[',
+		KEY_INCREASE_BLOCKSIZE = '.',
+		KEY_DECREASE_BLOCKSIZE = ','
 	} keys_t;
 	Mat frame;
 	HarrisCorners harrisDetector;

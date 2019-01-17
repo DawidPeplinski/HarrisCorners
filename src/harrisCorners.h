@@ -21,11 +21,17 @@ public:
 	void FindCorners(Mat frame);
 	void ShowCorners();
 	void IncreaseSensivity() { this->threshold = (this->maxThreshold < (this->threshold + 5)) ? this->maxThreshold : this->threshold + 5; }
-	void DecreaseSensivity() { this->threshold = ((this->threshold - 5) < 0) ? 0 : this->threshold - 5; }
+	void DecreaseSensivity() { this->threshold = ((this->threshold - 5) < this->minThreshold) ? this->minThreshold : this->threshold - 5; }
+	void IncreaseBlocksize() { this->blocksize = (this->maxBlocksize < (this->blocksize + 1)) ? this->maxBlocksize : this->blocksize + 1; }
+	void DecreaseBlocksize() { this->blocksize = ((this->blocksize - 1) < this->minBlocksize) ? this->minBlocksize : this->blocksize - 1; }
 
 private:
 	const int maxThreshold = 255;
+	const int minThreshold = 0;
+	const int maxBlocksize = 16;
+	const int minBlocksize = 2;
 	int threshold;
+	int blocksize;
 	Mat result;
 };
 
