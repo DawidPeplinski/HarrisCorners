@@ -20,6 +20,7 @@ HarrisCorners::~HarrisCorners() {
 
 void HarrisCorners::FindCorners(Mat frame) {
 	Mat dst, dst_norm, gray_frame;
+	this->source = frame.clone();
 	cvtColor(frame, gray_frame, COLOR_BGR2GRAY);
 	dst = Mat::zeros(frame.size(), CV_32FC1);
 	int apertureSize = 3;
@@ -49,7 +50,9 @@ void HarrisCorners::FindCorners(Mat frame) {
 	this->currentPointsCount = count;
 	for(int i = 0; i < this->currentPointsCount; i++) {
 		Point p = this->pointsTab[i];
-		rectangle(this->result, Point(p.x - this->blocksize, p.y - this->blocksize), Point(p.x + this->blocksize, p.y + this->blocksize), Scalar(0), 2, LINE_4, 0);
+		Point p1 = Point(p.x - this->blocksize, p.y - this->blocksize);
+		Point p2 = Point(p.x + this->blocksize, p.y + this->blocksize);
+		rectangle(this->result, p1, p2, Scalar(0), 2, LINE_4, 0);
 	}
 	std::cout << "Found points count: " << this->currentPointsCount << std::endl;
 }
@@ -64,14 +67,63 @@ void HarrisCorners::DestroyCornersWindow() {
 	this->currentPointsCount = 0;
 }
 
+void HarrisCorners::CalculateHistogram(Mat& frame) {
+	cvtColor(frame, frame, COLOR_BGR2GRAY);
+    // Set histogram bins count
+    int bins = 256;
+    int histSize[] = { bins };
+    // Set ranges for histogram bins
+    float lranges[] = { 0, 256 };
+    const float* ranges[] = { lranges };
+    // create matrix for histogram
+    Mat hist;
+    int channels[] = { 0 };
+    // create matrix for histogram visualization
+    int const hist_height = bins;
+    Mat3b hist_image = Mat3b::zeros(hist_height, bins);
+    // calculate histogram
+    calcHist(&frame, 1, channels, cv::Mat(), hist, 1, histSize, ranges, true, false);
+
+    double max_val = 0;
+    minMaxLoc(hist, 0, &max_val);
+
+    // visualize each bin
+    for(int b = 0; b < bins; b++) {
+        float const binVal = hist.at<float>(b);
+        int   const height = cvRound(binVal*hist_height/max_val);
+        line
+            (hist_image,
+            Point(b, hist_height-height),
+			Point(b, hist_height),
+            Scalar::all(255)
+            );
+    }
+    // Workaround for checking if window exists
+    if(getWindowProperty(HISTOGRAM_WINDOW, WND_PROP_AUTOSIZE) == 1)
+    	destroyWindow(HISTOGRAM_WINDOW);
+    namedWindow(HISTOGRAM_WINDOW, WINDOW_AUTOSIZE);
+    imshow(HISTOGRAM_WINDOW, hist_image);
+}
+
 void HarrisCorners::MouseCallback(int  event, int  x, int  y, int  flag, void *param) {
 	HarrisCorners *m = (HarrisCorners *)param;
 	if(event == EVENT_LBUTTONUP) {
 		for(int i = 0; i < m->currentPointsCount; i++) {
 			Point p = m->pointsTab[i];
 			if(abs(p.x - x) < m->blocksize && abs(p.y - y) < m->blocksize) {
-				rectangle(m->result, Point(p.x - m->blocksize, p.y - m->blocksize), Point(p.x + m->blocksize, p.y + m->blocksize), Scalar(255), 2, LINE_4, 0);
-				m->ShowCorners();
+				// Painting selected rectangle to white
+				Mat selectedPointImage = m->result.clone();
+				Point p1 = Point(p.x - m->blocksize, p.y - m->blocksize);
+				Point p2 = Point(p.x + m->blocksize, p.y + m->blocksize);
+				rectangle(selectedPointImage, p1, p2, Scalar(255), 2, LINE_4, 0);
+				imshow(HARRIS_CORNERS_WINDOW, selectedPointImage);
+				// Selecting the region of interest from original picture
+				Rect roi = Rect(p1.x, p1.y, m->blocksize*2, m->blocksize*2);
+				Mat sub = Mat(m->source.clone(), roi);
+				// Histogram from selected ROI
+				m->CalculateHistogram(sub);
+				selectedPointImage.deallocate();
+				sub.deallocate();
 				break;
 			}
 		}

@@ -16,6 +16,7 @@ FileMode::~FileMode() {
 }
 
 void FileMode::HandleMode() {
+	std::system("clear");
 	std::cout << "Starting file mode.." << std::endl;
 	std::cout << "Reading file from: " << this->filename << std::endl;
 	Mat emptyWindow(500, 1000, CV_8UC3, Scalar(0,0, 100));

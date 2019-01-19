@@ -16,6 +16,7 @@ CameraMode::~CameraMode() {
 }
 
 void CameraMode::HandleMode() {
+	std::system("clear");
 	std::cout << "Starting camera mode.." << std::endl;
 	Mat emptyWindow(500, 1000, CV_8UC3, Scalar(0,0, 100));
 	VideoCapture capture;
@@ -47,7 +48,8 @@ exit:
 }
 
 void CameraMode::HandleKeyboard() {
-	int key = waitKey(10);
+	int delay = (this->capturingActive) ? 10 : 0;
+	int key = waitKey(delay);
 	if(key == KEY_ESC)
 		SetGlobalMode(MODE_EXIT);
 	else if(key == KEY_FILE_MODE) {

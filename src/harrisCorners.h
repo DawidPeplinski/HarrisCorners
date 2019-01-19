@@ -12,6 +12,9 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include "main.h"
 
+#define HARRIS_CORNERS_WINDOW "HarrisCorners"
+#define HISTOGRAM_WINDOW "Gray Histogram"
+
 using namespace cv;
 
 class HarrisCorners {
@@ -29,6 +32,7 @@ public:
 
 private:
 	static void MouseCallback(int event, int x, int y, int flag, void *param);
+	void CalculateHistogram(Mat& frame);
 	static const int maxThreshold = 255;
 	static const int minThreshold = 0;
 	static const int maxBlocksize = 16;
@@ -38,6 +42,7 @@ private:
 	int blocksize;
 	Point pointsTab[maxPointsCount];
 	int currentPointsCount;
+	Mat source;
 	Mat result;
 };
 
