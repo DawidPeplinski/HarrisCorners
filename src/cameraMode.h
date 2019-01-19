@@ -28,12 +28,16 @@ private:
 		KEY_TOGGLE_CAPTURING = ' ',
 		KEY_INCREASE_DETECT_THRES = ']',
 		KEY_DECREASE_DETECT_THRES = '[',
-		KEY_INCREASE_BLOCKSIZE = '.',
-		KEY_DECREASE_BLOCKSIZE = ','
+		KEY_INCREASE_BLOCKSIZE = '\'',
+		KEY_DECREASE_BLOCKSIZE = ';',
+		KEY_SWITCH_HIST_MODES = 'm',
+		KEY_INCREASE_HISTCOMP_SENS = '.',
+		KEY_DECREASE_HISTCOMP_SENS = ','
 	} keys_t;
 	Mat frame;
 	HarrisCorners harrisDetector;
 	bool capturingActive;
+	int histMode;
 	void HandleKeyboard();
 };
 
