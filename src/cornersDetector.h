@@ -32,6 +32,7 @@ public:
 	void DecreaseBlocksize() { this->blocksize = ((this->blocksize - 1) < this->minBlocksize) ? this->minBlocksize : this->blocksize - 1; }
 	void IncreaseHistCompSensivity() { this->histCompSensitivity = (this->maxHistCompSens < (this->histCompSensitivity + 0.1f)) ? this->maxHistCompSens : this->histCompSensitivity + 0.1f; }
 	void DecreaseHistCompSensivity() { this->histCompSensitivity = ((this->histCompSensitivity - 0.1f) < this->minHistCompSens) ? this->minHistCompSens : this->histCompSensitivity - 0.1f; }
+	void SwitchDetectorMode() { this->detectorMode = (this->detectorMode == DETECTOR_HARRIS_MODE) ? DETECTOR_MORAVEC_MODE : DETECTOR_HARRIS_MODE; }
 
 private:
 	void HarrisCorners(Mat &frame);

@@ -10,7 +10,7 @@
 #include <iostream>
 
 CornersDetector::CornersDetector() {
-	this->detectorMode = DETECTOR_MORAVEC_MODE;
+	this->detectorMode = DETECTOR_HARRIS_MODE;
 	this->threshold = this->maxThreshold;
 	this->blocksize = 4;
 	this->histMode = 1;
@@ -29,6 +29,7 @@ void CornersDetector::DrawRectangle(Mat &frame, Point p, Scalar color) {
 }
 
 void CornersDetector::HarrisCorners(Mat &frame) {
+	std::cout << "Detector: Harris" << std::endl;
 	Mat dst, dst_norm, gray_frame;
 	this->source = frame.clone();
 	cvtColor(frame, gray_frame, COLOR_BGR2GRAY);
@@ -59,6 +60,7 @@ void CornersDetector::HarrisCorners(Mat &frame) {
 }
 
 void CornersDetector::MoravecCorners(Mat &frame) {
+	std::cout << "Detector: Moravec" << std::endl;
 	this->source = frame.clone();
 	// Turn image to one, gray channel
 	Mat dst(frame.rows, frame.cols, CV_8UC1);
@@ -95,7 +97,6 @@ void CornersDetector::MoravecCorners(Mat &frame) {
 
 void CornersDetector::FindCorners(Mat frame) {
 	this->pointsTab.clear();
-	system("clear");
 	switch(this->detectorMode) {
 		case DETECTOR_HARRIS_MODE:
 			this->HarrisCorners(frame);
@@ -192,6 +193,7 @@ void CornersDetector::CompareCorners(Mat frame) {
 	sub.deallocate();
 	hist.deallocate();
 	// Showing the result
+	std::cout << "Comparing finished" << std::endl;
 	imshow(MAIN_WINDOW_NAME, this->result);
 }
 

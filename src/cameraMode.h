@@ -33,7 +33,8 @@ private:
 		KEY_DECREASE_BLOCKSIZE = ';',
 		KEY_SWITCH_HIST_MODES = 'm',
 		KEY_INCREASE_HISTCOMP_SENS = '.',
-		KEY_DECREASE_HISTCOMP_SENS = ','
+		KEY_DECREASE_HISTCOMP_SENS = ',',
+		KEY_SWITCH_DETECT_MODES = 'q'
 	} keys_t;
 	Mat frame;
 	CornersDetector cornersDetector;
