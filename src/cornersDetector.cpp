@@ -10,6 +10,7 @@
 #include <iostream>
 
 CornersDetector::CornersDetector() {
+	this->detectorMode = DETECTOR_MORAVEC_MODE;
 	this->threshold = this->maxThreshold;
 	this->blocksize = 4;
 	this->histMode = 1;
@@ -27,7 +28,7 @@ void CornersDetector::DrawRectangle(Mat &frame, Point p, Scalar color) {
 	rectangle(frame, p1, p2, color, 2, LINE_4, 0);
 }
 
-void CornersDetector::FindCorners(Mat frame) {
+void CornersDetector::HarrisCorners(Mat &frame) {
 	Mat dst, dst_norm, gray_frame;
 	this->source = frame.clone();
 	cvtColor(frame, gray_frame, COLOR_BGR2GRAY);
@@ -39,27 +40,82 @@ void CornersDetector::FindCorners(Mat frame) {
 	// Normalizing
 	normalize(dst, dst_norm, 0, 255, NORM_MINMAX, CV_32FC1, Mat());
 	convertScaleAbs(dst_norm, this->result);
-	// Counting thresholded points to prevent program seizing during circles drawing
-	int count = 0;
-	std::cout << "Current threshold: " << this->threshold << std::endl;
-	std::cout << "Current blocksize: " << this->blocksize << std::endl;
+	// Counting thresholded points to prevent program seizing during rectangles drawing
 	for(int j = 0; j < dst_norm.rows; j++) {
 		for(int i = 0; i < dst_norm.cols; i++) {
 			if((int)dst_norm.at<float>(j,i) > this->threshold) {
-			   this->pointsTab[count++] = Point(i, j);
-			   if(this->maxPointsCount <= count) {
+			   this->pointsTab.push_back(Point(i, j));
+			   if(this->maxPointsCount <= this->pointsTab.size()) {
 				   this->currentPointsCount = 0;
 				   std::cout << "Too many points detected!" << std::endl;
+				   this->pointsTab.clear();
+				   this->currentPointsCount = 0;
 				   return;
 			   }
 			}
 		}
 	}
+	this->currentPointsCount = this->pointsTab.size();
+}
+
+void CornersDetector::MoravecCorners(Mat &frame) {
+	this->source = frame.clone();
+	// Turn image to one, gray channel
+	Mat dst(frame.rows, frame.cols, CV_8UC1);
+	cvtColor(frame, dst, COLOR_BGR2GRAY);
+	medianBlur(dst, dst, 15);
+	this->result = dst.clone();
+	// Find corners
+	int blockSize = this->blocksize;
+	int threshold = (int)this->threshold*10;
+	for(int i = blockSize; i < dst.rows - blockSize; i++) {
+		for(int j = blockSize; j < dst.cols - blockSize; j++) {
+			int E = INT32_MAX;
+			for(int k = 1; k <= blockSize; k++) {
+				int diff = 0;
+				int currentPoint = dst.at<uchar>(Point(j, i));
+				diff += dst.at<uchar>(Point(j + k, i)) - currentPoint;
+				diff += dst.at<uchar>(Point(j + k, i + k)) - currentPoint;
+				diff += dst.at<uchar>(Point(j, i + k)) - currentPoint;
+				diff += dst.at<uchar>(Point(j - k, i + k)) - currentPoint;
+				diff += dst.at<uchar>(Point(j - k, i)) - currentPoint;
+				diff += dst.at<uchar>(Point(j - k, i - k)) - currentPoint;
+				diff += dst.at<uchar>(Point(j, i - k)) - currentPoint;
+				diff += dst.at<uchar>(Point(j + k, i - k)) - currentPoint;
+				diff *= diff;
+				if(diff < E)
+					E = diff;
+			}
+			if(threshold < E)
+				this->pointsTab.push_back(Point(j, i));
+		}
+	}
+	this->currentPointsCount = this->pointsTab.size();
+}
+
+void CornersDetector::FindCorners(Mat frame) {
+	this->pointsTab.clear();
+	system("clear");
+	switch(this->detectorMode) {
+		case DETECTOR_HARRIS_MODE:
+			this->HarrisCorners(frame);
+			break;
+
+		case DETECTOR_MORAVEC_MODE:
+			this->MoravecCorners(frame);
+			break;
+
+		default:
+			// Overrun
+			break;
+	}
+
 	// Drawing rectangles around corners
-	this->currentPointsCount = count;
 	for(int i = 0; i < this->currentPointsCount; i++) {
 		this->DrawRectangle(this->result, this->pointsTab[i], Scalar(0));
 	}
+	std::cout << "Current threshold: " << this->threshold << std::endl;
+	std::cout << "Current blocksize: " << this->blocksize << std::endl;
 	std::cout << "Found points count: " << this->currentPointsCount << std::endl;
 	// Showing the result
 	imshow(CORNERS_WINDOW, this->result);

@@ -34,21 +34,28 @@ public:
 	void DecreaseHistCompSensivity() { this->histCompSensitivity = ((this->histCompSensitivity - 0.1f) < this->minHistCompSens) ? this->minHistCompSens : this->histCompSensitivity - 0.1f; }
 
 private:
+	void HarrisCorners(Mat &frame);
+	void MoravecCorners(Mat &frame);
 	static void MouseCallback(int event, int x, int y, int flag, void *param);
 	void CalculateHistogram(Mat& frame, Mat& hist, bool ifShow);
 	void DrawRectangle(Mat &frame, Point p, Scalar color);
+	typedef enum {
+		DETECTOR_HARRIS_MODE,
+		DETECTOR_MORAVEC_MODE
+	} detectorModes_t;
 	const int maxThreshold = 255;
-	const int minThreshold = 0;
+	const int minThreshold = 5;
 	const int maxBlocksize = 16;
 	const int minBlocksize = 2;
 	const float maxHistCompSens = 0.9f;
 	const float minHistCompSens = 0.1f;
 	static const int maxPointsCount = 100000;
+	detectorModes_t detectorMode;
 	int threshold;
 	int blocksize;
 	int histMode;
 	float histCompSensitivity;
-	Point pointsTab[maxPointsCount];
+	std::vector<Point> pointsTab;
 	int currentPointsCount;
 	Mat source;
 	Mat result;
