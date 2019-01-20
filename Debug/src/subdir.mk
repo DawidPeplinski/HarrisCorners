@@ -5,20 +5,20 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
 ../src/cameraMode.cpp \
+../src/cornersDetector.cpp \
 ../src/fileMode.cpp \
-../src/harrisCorners.cpp \
 ../src/main.cpp 
 
 OBJS += \
 ./src/cameraMode.o \
+./src/cornersDetector.o \
 ./src/fileMode.o \
-./src/harrisCorners.o \
 ./src/main.o 
 
 CPP_DEPS += \
 ./src/cameraMode.d \
+./src/cornersDetector.d \
 ./src/fileMode.d \
-./src/harrisCorners.d \
 ./src/main.d 
 
 

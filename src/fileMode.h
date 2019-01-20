@@ -10,7 +10,8 @@
 
 #include <opencv2/highgui/highgui.hpp>
 #include <iostream>
-#include "harrisCorners.h"
+
+#include "cornersDetector.h"
 #include "main.h"
 
 using namespace cv;
@@ -38,7 +39,7 @@ private:
 	} keys_t;
 	std::string filename;
 	Mat frame;
-	HarrisCorners harrisDetector;
+	CornersDetector cornersDetector;
 	int histMode;
 	void HandleKeyboard();
 	void ReadPathFromKeyboard();

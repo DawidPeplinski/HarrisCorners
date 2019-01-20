@@ -1,14 +1,15 @@
 /*
- * harrisCorners.cpp
+ * cornersDetector.cpp
  *
  *  Created on: 16 Jan 2019
  *      Author: davca
  */
 
-#include "harrisCorners.h"
+#include "cornersDetector.h"
+
 #include <iostream>
 
-HarrisCorners::HarrisCorners() {
+CornersDetector::CornersDetector() {
 	this->threshold = this->maxThreshold;
 	this->blocksize = 4;
 	this->histMode = 1;
@@ -16,17 +17,17 @@ HarrisCorners::HarrisCorners() {
 	this->currentPointsCount = 0;
 }
 
-HarrisCorners::~HarrisCorners() {
+CornersDetector::~CornersDetector() {
 
 }
 
-void HarrisCorners::DrawRectangle(Mat &frame, Point p, Scalar color) {
+void CornersDetector::DrawRectangle(Mat &frame, Point p, Scalar color) {
 	Point p1 = Point(p.x - this->blocksize, p.y - this->blocksize);
 	Point p2 = Point(p.x + this->blocksize, p.y + this->blocksize);
 	rectangle(frame, p1, p2, color, 2, LINE_4, 0);
 }
 
-void HarrisCorners::FindCorners(Mat frame) {
+void CornersDetector::FindCorners(Mat frame) {
 	Mat dst, dst_norm, gray_frame;
 	this->source = frame.clone();
 	cvtColor(frame, gray_frame, COLOR_BGR2GRAY);
@@ -61,10 +62,10 @@ void HarrisCorners::FindCorners(Mat frame) {
 	}
 	std::cout << "Found points count: " << this->currentPointsCount << std::endl;
 	// Showing the result
-	imshow(HARRIS_CORNERS_WINDOW, this->result);
+	imshow(CORNERS_WINDOW, this->result);
 }
 
-void HarrisCorners::CompareCorners(Mat frame) {
+void CornersDetector::CompareCorners(Mat frame) {
 	this->FindCorners(frame);
 	std::cout << "Current histograms comparator sensitivity: " << this->histCompSensitivity << std::endl;
 	// when no points or too many points detected
@@ -138,12 +139,12 @@ void HarrisCorners::CompareCorners(Mat frame) {
 	imshow(MAIN_WINDOW_NAME, this->result);
 }
 
-void HarrisCorners::DestroyCornersWindow() {
-	destroyWindow(HARRIS_CORNERS_WINDOW);
+void CornersDetector::DestroyCornersWindow() {
+	destroyWindow(CORNERS_WINDOW);
 	this->currentPointsCount = 0;
 }
 
-void HarrisCorners::CalculateHistogram(Mat& frame, Mat& hist, bool ifShow) {
+void CornersDetector::CalculateHistogram(Mat& frame, Mat& hist, bool ifShow) {
 	cvtColor(frame, frame, COLOR_BGR2GRAY);
     // Set histogram bins count
     int bins = 256;
@@ -181,8 +182,8 @@ void HarrisCorners::CalculateHistogram(Mat& frame, Mat& hist, bool ifShow) {
     }
  }
 
-void HarrisCorners::MouseCallback(int  event, int  x, int  y, int  flag, void *param) {
-	HarrisCorners *m = (HarrisCorners *)param;
+void CornersDetector::MouseCallback(int  event, int  x, int  y, int  flag, void *param) {
+	CornersDetector *m = (CornersDetector *)param;
 	if(event == EVENT_LBUTTONUP) {
 		for(int i = 0; i < m->currentPointsCount; i++) {
 			Point p = m->pointsTab[i];
@@ -191,7 +192,7 @@ void HarrisCorners::MouseCallback(int  event, int  x, int  y, int  flag, void *p
 				Mat selectedPointImage = m->result.clone();
 				cvtColor(selectedPointImage, selectedPointImage, COLOR_GRAY2BGR);
 				m->DrawRectangle(selectedPointImage, p, Scalar(255, 255, 0));
-				imshow(HARRIS_CORNERS_WINDOW, selectedPointImage);
+				imshow(CORNERS_WINDOW, selectedPointImage);
 				// Selecting the region of interest from original picture
 				Point p1 = Point(p.x - m->blocksize, p.y - m->blocksize);
 				Rect roi = Rect(p1.x, p1.y, m->blocksize*2, m->blocksize*2);
@@ -215,10 +216,10 @@ void HarrisCorners::MouseCallback(int  event, int  x, int  y, int  flag, void *p
 	}
 }
 
-void HarrisCorners::BindMouseCallback() {
-	setMouseCallback(HARRIS_CORNERS_WINDOW, MouseCallback, this);
+void CornersDetector::BindMouseCallback() {
+	setMouseCallback(CORNERS_WINDOW, MouseCallback, this);
 }
 
-void HarrisCorners::UnbindMouseCallback() {
-	setMouseCallback(HARRIS_CORNERS_WINDOW, NULL, NULL);
+void CornersDetector::UnbindMouseCallback() {
+	setMouseCallback(CORNERS_WINDOW, NULL, NULL);
 }

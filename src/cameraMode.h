@@ -10,7 +10,8 @@
 
 #include <opencv2/highgui/highgui.hpp>
 #include <iostream>
-#include "harrisCorners.h"
+
+#include "cornersDetector.h"
 #include "main.h"
 
 using namespace cv;
@@ -35,7 +36,7 @@ private:
 		KEY_DECREASE_HISTCOMP_SENS = ','
 	} keys_t;
 	Mat frame;
-	HarrisCorners harrisDetector;
+	CornersDetector cornersDetector;
 	bool capturingActive;
 	int histMode;
 	void HandleKeyboard();

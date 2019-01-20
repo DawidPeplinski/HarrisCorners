@@ -45,14 +45,14 @@ void CameraMode::HandleMode() {
 		} else {
 			switch(this->histMode) {
 				case 1:
-					this->harrisDetector.FindCorners(this->frame);
-					this->harrisDetector.BindMouseCallback();
+					this->cornersDetector.FindCorners(this->frame);
+					this->cornersDetector.BindMouseCallback();
 					imshow(MAIN_WINDOW_NAME, this->frame);
 					break;
 
 				case 2:
-					this->harrisDetector.CompareCorners(this->frame);
-					this->harrisDetector.UnbindMouseCallback();
+					this->cornersDetector.CompareCorners(this->frame);
+					this->cornersDetector.UnbindMouseCallback();
 					break;
 				default:
 					// overrun
@@ -76,20 +76,20 @@ void CameraMode::HandleKeyboard() {
 	} else if(key == KEY_TOGGLE_CAPTURING) {
 		this->capturingActive = !this->capturingActive;
 		if(this->capturingActive == true) {
-			this->harrisDetector.DestroyCornersWindow();
+			this->cornersDetector.DestroyCornersWindow();
 		}
 	} else if(key == KEY_INCREASE_DETECT_THRES && this->capturingActive == false) {
-		this->harrisDetector.IncreaseSensivity();
+		this->cornersDetector.IncreaseSensivity();
 	} else if(key == KEY_DECREASE_DETECT_THRES && this->capturingActive == false) {
-		harrisDetector.DecreaseSensivity();
+		cornersDetector.DecreaseSensivity();
 	} else if(key == KEY_INCREASE_BLOCKSIZE && this->capturingActive == false) {
-		this->harrisDetector.IncreaseBlocksize();
+		this->cornersDetector.IncreaseBlocksize();
 	} else if(key == KEY_DECREASE_BLOCKSIZE && this->capturingActive == false) {
-		harrisDetector.DecreaseBlocksize();
+		cornersDetector.DecreaseBlocksize();
 	} else if(key == KEY_INCREASE_HISTCOMP_SENS && this->histMode == 2 && this->capturingActive == false) {
-		this->harrisDetector.IncreaseHistCompSensivity();
+		this->cornersDetector.IncreaseHistCompSensivity();
 	} else if(key == KEY_DECREASE_HISTCOMP_SENS && this->histMode == 2 && this->capturingActive == false) {
-		this->harrisDetector.DecreaseHistCompSensivity();
+		this->cornersDetector.DecreaseHistCompSensivity();
 	} else if(key == KEY_SWITCH_HIST_MODES) {
 		if(this->histMode == 1) {
 			system("clear");

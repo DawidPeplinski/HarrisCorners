@@ -1,26 +1,26 @@
 /*
- * harrisCorners.h
+ * cornersDetector.h
  *
  *  Created on: 16 Jan 2019
  *      Author: davca
  */
 
-#ifndef HARRISCORNERS_H_
-#define HARRISCORNERS_H_
+#ifndef CORNERSDETECTOR_H_
+#define CORNERSDETECTOR_H_
 
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include "main.h"
 
-#define HARRIS_CORNERS_WINDOW "HarrisCorners"
+#define CORNERS_WINDOW "Corners"
 #define HISTOGRAM_WINDOW "Gray Histogram"
 
 using namespace cv;
 
-class HarrisCorners {
+class CornersDetector {
 public:
-	HarrisCorners();
-	virtual ~HarrisCorners();
+	CornersDetector();
+	virtual ~CornersDetector();
 	void FindCorners(Mat frame);
 	void CompareCorners(Mat frame);
 	void DestroyCornersWindow();
@@ -54,4 +54,4 @@ private:
 	Mat result;
 };
 
-#endif /* HARRISCORNERS_H_ */
+#endif /* CORNERSDETECTOR_H_ */

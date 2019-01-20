@@ -58,14 +58,14 @@ void FileMode::HandleMode() {
 	while(GetGlobalMode() == MODE_FILE) {
 		switch(this->histMode) {
 			case 1:
-				this->harrisDetector.FindCorners(this->frame);
-				this->harrisDetector.BindMouseCallback();
+				this->cornersDetector.FindCorners(this->frame);
+				this->cornersDetector.BindMouseCallback();
 				imshow(MAIN_WINDOW_NAME, this->frame);
 				break;
 
 			case 2:
-				this->harrisDetector.CompareCorners(this->frame);
-				this->harrisDetector.UnbindMouseCallback();
+				this->cornersDetector.CompareCorners(this->frame);
+				this->cornersDetector.UnbindMouseCallback();
 				break;
 			default:
 				// overrun
@@ -85,17 +85,17 @@ void FileMode::HandleKeyboard() {
 	else if(key == KEY_CAMERA_MODE)
 		SetGlobalMode(MODE_CAMERA);
 	else if(key == KEY_INCREASE_DETECT_THRES) {
-		harrisDetector.IncreaseSensivity();
+		cornersDetector.IncreaseSensivity();
 	} else if(key == KEY_DECREASE_DETECT_THRES) {
-		harrisDetector.DecreaseSensivity();
+		cornersDetector.DecreaseSensivity();
 	} else if(key == KEY_INCREASE_BLOCKSIZE) {
-		this->harrisDetector.IncreaseBlocksize();
+		this->cornersDetector.IncreaseBlocksize();
 	} else if(key == KEY_DECREASE_BLOCKSIZE) {
-		harrisDetector.DecreaseBlocksize();
+		cornersDetector.DecreaseBlocksize();
 	} else if(key == KEY_INCREASE_HISTCOMP_SENS && this->histMode == 2) {
-		this->harrisDetector.IncreaseHistCompSensivity();
+		this->cornersDetector.IncreaseHistCompSensivity();
 	} else if(key == KEY_DECREASE_HISTCOMP_SENS && this->histMode == 2) {
-		this->harrisDetector.DecreaseHistCompSensivity();
+		this->cornersDetector.DecreaseHistCompSensivity();
 	} else if(key == KEY_SWITCH_HIST_MODES) {
 		if(this->histMode == 1) {
 			system("clear");
